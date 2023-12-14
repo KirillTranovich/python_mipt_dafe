@@ -15,21 +15,25 @@ class EnvironmentNim:
     _heaps: list[int]       # кучки
 
     def __init__(self, heaps_amount: int) -> None:
-        pass
+
+        if 2 <= heaps_amount <= 10:
+            self._heaps = [randint(STONE_AMOUNT_MIN,
+                           STONE_AMOUNT_MAX) for _ in range(heaps_amount)]
+        else:
+            raise ValueError
 
     def get_state(self) -> list[int]:
         """
         Получение текущего состояния кучек
-        
-        :return: копия списка с кучек 
+
+        :return: копия списка с кучек
         """
-        pass
+        return self._heaps
 
     def change_state(self, state_change: NimStateChange) -> None:
-        """
-        Изменения текущего состояния кучек
 
-        :param state_change: структура описывающая изменение состояния
-        """
-        pass
-
+        if not (0 < state_change.heap_id <= len(self._heaps)):
+            raise ValueError("Decreasing from incorrect heap")
+        if not (1 <= state_change.decrease <= self._heaps[state_change.heap_id - 1]):
+            raise ValueError("Decreasing incorrect num of stones")
+        self._heaps[state_change.heap_id - 1] -= state_change.decrease
